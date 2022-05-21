@@ -5,15 +5,27 @@ package JavaBot;
 
 import javax.security.auth.login.LoginException;
 
+
+import io.github.cdimascio.dotenv.Dotenv;
+import JavaBot.Database.MongoConnection;
 import JavaBot.Listeners.ExclamationHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 public class App {
+
+
 	public static void main(String[] args) throws LoginException {
+		//Get the twitch API token and load it into the bot
+		Dotenv dotenv = Dotenv.load();
+		String token = dotenv.get("TWITCH_TOKEN");
 		JDA api = JDABuilder
-			.createDefault("OTc3MDY1MzE3NzQ4NTk2Nzg3.G2HN1e.y0Uo4xiHWzUfgrpHI9sRtrh4EWgTjSd7KfkC3I")
-			.addEventListeners(new MessageHandler(), new ExclamationHandler()) 
+			.createDefault(token)
+			.addEventListeners(new ExclamationHandler()) 
 			.build();
+		MongoConnection db = new MongoConnection();
+		db.addUser("TestingUser");
+		db.close();
 	}
+
 }

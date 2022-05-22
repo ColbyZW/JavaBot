@@ -6,6 +6,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
 
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
@@ -39,26 +41,48 @@ public class MongoConnection {
 		}
 	}	
 
-	//Finds a user in the database and returns their document
-	public Document findUser(String username) {
+	//Returns the collection of just documents
+	private MongoCollection<Document> getCollection() {
 		MongoDatabase db = mongoClient.getDatabase("botDatabase");
-		MongoCollection<Document> coll = db.getCollection("discord");
-		Document doc = coll.find(eq("username", username)).first();
+		return db.getCollection("discord");
+	}
+
+	//Gets the collection of Users
+	private MongoCollection<DiscordUser> getUserCollection() {
+		MongoDatabase db = mongoClient.getDatabase("botDatabase").withCodecRegistry(pojoCodecRegistry);
+		return db.getCollection("discord", DiscordUser.class);
+	}
+
+	//Finds a user in the database and returns their document
+	public DiscordUser findUser(String username) {
+		MongoCollection<DiscordUser> coll = getUserCollection(); 
+		DiscordUser doc = coll.find(eq("username", username)).first();
 		return doc;
 	}
 
 	//Adds a User to the database using the user POJO
-	public Document addUser(String username) {
+	public DiscordUser addUser(String username) {
 		//Creates a new user with the provided username
-		User user = new User(username);
+		DiscordUser user = new DiscordUser(username);
 		//Grabs the database using the codec registry to allow us to use the custom User class
-		MongoDatabase db = mongoClient.getDatabase("botDatabase").withCodecRegistry(pojoCodecRegistry);
-		MongoCollection<User> collection = db.getCollection("discord", User.class);
+		MongoCollection<DiscordUser> collection = getUserCollection(); 
 		collection.insertOne(user);
 		//Return a reference to the user that was just added
 		return findUser(username);
 	}
+	
 
+	//Adds to the users message count
+	public void addMessage(DiscordUser user) { 
+		MongoCollection<DiscordUser> collection = getUserCollection();
+		collection.updateOne(eq("username", user.getUsername()), Updates.inc("messagesSent", 1), new UpdateOptions().upsert(true));
+	}
+	
+	//Adds money to the user in the database
+	public void addMoney(DiscordUser user, int amount) {
+		MongoCollection<DiscordUser> collection = getUserCollection();
+		collection.updateOne(eq("username", user.getUsername()), Updates.inc("money", amount), new UpdateOptions().upsert(true));
+	}
 
 	//Closes the connection
 	public void close() {

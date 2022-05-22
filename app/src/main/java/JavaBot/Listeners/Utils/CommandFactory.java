@@ -1,6 +1,7 @@
-package JavaBot.Listeners;
+package JavaBot.Listeners.Utils;
 
 import net.dv8tion.jda.api.entities.User;
+import JavaBot.Listeners.*;
 
 public class CommandFactory
 {
@@ -19,8 +20,9 @@ public class CommandFactory
 		String[] parsedCommand = cleanCommand.split(" ");
 		switch(parsedCommand[0]) {
 			case "gamble":
-				Command cmd = new Gamble(command, author);
-				return cmd;
+				 return new Gamble(command, author);
+			case "profile":
+				 return new Profile(command, author);
 			default:
 				return new Default(command, author); 
 		}

@@ -7,9 +7,9 @@ import javax.security.auth.login.LoginException;
 
 
 import io.github.cdimascio.dotenv.Dotenv;
-import JavaBot.Database.MongoConnection;
-import JavaBot.Listeners.ExclamationHandler;
 import net.dv8tion.jda.api.JDA;
+import JavaBot.Listeners.Handlers.ChatHandler;
+import JavaBot.Listeners.Handlers.ExclamationHandler;
 import net.dv8tion.jda.api.JDABuilder;
 
 public class App {
@@ -21,11 +21,8 @@ public class App {
 		String token = dotenv.get("TWITCH_TOKEN");
 		JDA api = JDABuilder
 			.createDefault(token)
-			.addEventListeners(new ExclamationHandler()) 
+			.addEventListeners(new ExclamationHandler(), new ChatHandler()) 
 			.build();
-		MongoConnection db = new MongoConnection();
-		db.addUser("TestingUser");
-		db.close();
 	}
 
 }

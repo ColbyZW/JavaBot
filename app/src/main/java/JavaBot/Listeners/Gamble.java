@@ -1,5 +1,7 @@
 package JavaBot.Listeners;
 
+import java.util.Random;
+
 import org.bson.Document;
 
 import JavaBot.Listeners.Utils.*;
@@ -26,13 +28,33 @@ public class Gamble extends Command {
 	{
 		if(!verifyCommand()) {
 			channel.sendMessage("Please provide an appropriate amount: (!gamble 100)").queue();
+			return;
 		}
 		MongoConnection db = new MongoConnection();
 		DiscordUser doc = db.findUser(author.getName());	
 		int money = Integer.parseInt(splitCommand[1]);
 		if(money > doc.getMoney()) {
 			channel.sendMessage("You dont have enough money for that.").queue();
+			db.close();
+			return;
 		}
+		if(gamble()) {
+			db.addMoney(doc, money*2);
+			channel.sendMessage("You just won " + money*2 + " moneys").queue();
+		} else {
+			db.addMoney(doc, -money);
+			channel.sendMessage("You just lost " + money + " moneys").queue();
+		}
+		db.close();
+	}
+
+	//Rolls a random number and if the number is below 35, "true" is returned
+	private Boolean gamble() {
+		Random rand = new Random();
+		int val = rand.nextInt() % 100;
+		val = Math.abs(val);
+		System.out.println("val: " + val);
+		return val <= 35;
 	}
 
 	//Verifies that the correct arguments were passed in when calling gamble

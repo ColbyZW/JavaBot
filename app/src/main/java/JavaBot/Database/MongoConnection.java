@@ -30,12 +30,13 @@ public class MongoConnection {
 	//Opens up the initial mongo connection and stores it in an internal variable
 	public MongoConnection() {
 		Dotenv dotenv = Dotenv.load();
-		this.uri = dotenv.get("URI");
+		this.uri = dotenv.get("MONGO_URI");
 		try {
 			//Registers a codec registry to allow us to use custom classes with Mongo
 			CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
 			 pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
 			this.mongoClient = MongoClients.create(uri);
+			System.out.println("CONNECTED TO DATABASE");
 		} catch (Exception e) {
 			this.mongoClient = null;
 		}

@@ -28,6 +28,10 @@ dependencies {
 	implementation 'org.mongodb:mongodb-driver-sync:4.3.0'
 
 	implementation 'io.github.cdimascio:dotenv-java:2.2.3'
+	//Youtube API
+	implementation 'com.google.api-client:google-api-client:1.23.0'
+	implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+	implementation 'com.google.apis:google-api-services-youtube:v3-rev222-1.25.0'
 }
 
 application {

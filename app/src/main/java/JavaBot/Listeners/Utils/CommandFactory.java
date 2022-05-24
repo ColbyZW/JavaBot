@@ -23,6 +23,10 @@ public class CommandFactory
 				 return new Gamble(command, author);
 			case "profile":
 				 return new Profile(command, author);
+			case "youtube":
+				 return new YoutubeVideo(command, author);
+			case "help":
+				 return new Help();
 			default:
 				return new Default(command, author); 
 		}

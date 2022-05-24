@@ -26,6 +26,7 @@ public class MongoConnection {
 	private MongoClient mongoClient;	
 	private String uri;
 	private CodecRegistry pojoCodecRegistry;
+	private Boolean success;
 
 	//Opens up the initial mongo connection and stores it in an internal variable
 	public MongoConnection() {
@@ -36,9 +37,10 @@ public class MongoConnection {
 			CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
 			 pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
 			this.mongoClient = MongoClients.create(uri);
-			System.out.println("CONNECTED TO DATABASE");
+			this.success = true;
 		} catch (Exception e) {
 			this.mongoClient = null;
+			this.success = false;
 		}
 	}	
 
@@ -52,6 +54,11 @@ public class MongoConnection {
 	private MongoCollection<DiscordUser> getUserCollection() {
 		MongoDatabase db = mongoClient.getDatabase("botDatabase").withCodecRegistry(pojoCodecRegistry);
 		return db.getCollection("discord", DiscordUser.class);
+	}
+
+	//Returns if the database was able to open a connection or not
+	public Boolean getStatus() {
+		return success;
 	}
 
 	//Finds a user in the database and returns their document

@@ -11,8 +11,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 
-import JavaBot.Database.DiscordUser;
-import JavaBot.Database.MongoConnection;
 import JavaBot.Listeners.Utils.Command;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -24,20 +22,17 @@ public class YoutubeVideo extends Command {
 	private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private String key;
 	private String command;
-	private DiscordUser author;
-	private String[] parsedCommand;
+
+	private String[] splitCommand;
 	
 
 	public YoutubeVideo(String command, User author){
-		MongoConnection db = new MongoConnection();
-		DiscordUser doc = db.findUser(author.getName());
 
 		Dotenv dotenv = Dotenv.load();
 		this.key = dotenv.get("YOUTUBE_API");
 
 		this.command = command;
-		this.author = doc;	
-		this.parsedCommand = command.split(" ");
+		this.splitCommand = command.split(" ");
 		
 	}
 
@@ -49,6 +44,7 @@ public class YoutubeVideo extends Command {
 			.build();
 	}
 
+	//Searches Youtube API for a query and returns a completed link
 	private String getVideo(String searchTerms) throws GeneralSecurityException, IOException, GoogleJsonResponseException{
 		String[] terms = searchTerms.split(" ");
 		terms[0] = "";
@@ -64,8 +60,9 @@ public class YoutubeVideo extends Command {
 		
 	} 
 
+	//Sends a youtube video in the discord channel if one was found
 	public void runCommand(MessageChannel channel) {
-		if(parsedCommand.length <= 1) {
+		if(splitCommand.length <= 1) {
 			channel.sendMessage("Please provide a video title after the command").queue();
 			return;
 		}	

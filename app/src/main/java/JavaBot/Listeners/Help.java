@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 
 public class Help extends Command {
 
+
 	public void runCommand(MessageChannel channel) {
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setTitle("Commands");

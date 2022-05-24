@@ -20,6 +20,9 @@ public class Profile extends Command {
 
 	//Creates an embed that displays users statistics in the server and sends it
 	public void runCommand(MessageChannel channel) {
+		if(user == null) {
+			channel.sendMessage("Unable to find your profile :(").queue();
+		}
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setTitle(user.getUsername(), null);
 		embed.addField("Messages Sent", String.format("%s", user.getMessagesSent()), false);

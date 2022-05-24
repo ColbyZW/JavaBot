@@ -31,6 +31,10 @@ public class Gamble extends Command {
 			return;
 		}
 		MongoConnection db = new MongoConnection();
+		if(!db.getStatus()) {
+			channel.sendMessage("Unable to load data :(").queue();
+			return;
+		}
 		DiscordUser doc = db.findUser(author.getName());	
 		int money = Integer.parseInt(splitCommand[1]);
 		if(money > doc.getMoney()) {
@@ -53,7 +57,6 @@ public class Gamble extends Command {
 		Random rand = new Random();
 		int val = rand.nextInt() % 100;
 		val = Math.abs(val);
-		System.out.println("val: " + val);
 		return val <= 35;
 	}
 

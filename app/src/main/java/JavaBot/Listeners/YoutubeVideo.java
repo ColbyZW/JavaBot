@@ -56,18 +56,24 @@ public class YoutubeVideo extends Command {
 			.setQ(query)
 			.execute();
 		String videoId = response.getItems().get(0).getId().getVideoId();
+		if(videoId.equals("null")) return null;
 		return "https://www.youtube.com/watch?v="+videoId;
 		
 	} 
 
 	//Sends a youtube video in the discord channel if one was found
 	public void runCommand(MessageChannel channel) {
+		channel.sendTyping().queue();
 		if(splitCommand.length <= 1) {
 			channel.sendMessage("Please provide a video title after the command").queue();
 			return;
 		}	
 		try {
 			String result = getVideo(command);
+			if(result == null) {
+				channel.sendMessage("Sorry, couldn't find videos matching your search").queue();
+				return;
+			}
 			String response = "Here is your video! \n";
 			channel.sendMessage(response + result).queue();
 		} catch (Exception e){

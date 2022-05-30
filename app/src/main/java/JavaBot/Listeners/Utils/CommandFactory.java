@@ -27,6 +27,8 @@ public class CommandFactory
 				 return new YoutubeVideo(command, author);
 			case "help":
 				 return new Help();
+			case "wiki":
+				 return new Runescape(command, author);
 			default:
 				return new Default(command, author); 
 		}

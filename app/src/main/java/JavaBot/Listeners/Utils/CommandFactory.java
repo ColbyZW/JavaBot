@@ -29,6 +29,8 @@ public class CommandFactory
 				 return new Help();
 			case "wiki":
 				 return new Runescape(command, author);
+			case "ge":
+				 return new GrandExchange(command, author);
 			default:
 				return new Default(command, author); 
 		}

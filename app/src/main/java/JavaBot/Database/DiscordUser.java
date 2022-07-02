@@ -3,13 +3,24 @@ package JavaBot.Database;
 import org.bson.types.ObjectId;
 
 public class DiscordUser {
+	/** Stores the username */
 	private String username;
+
+	/** Stores the user ID */
 	private ObjectId id;
+
+	/** Stores the users curret amount of money */
 	private int money;
+
+	/** Stores the amount of messages the user has sent */
 	private int messagesSent;
 
 	public DiscordUser(){}
 
+	/**
+	 * Default constructor for creating a new user
+	 * @param username username of the user
+	 */
 	public DiscordUser(String username) {
 		this.username = username;
 		this.money = 0;

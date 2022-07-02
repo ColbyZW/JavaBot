@@ -23,7 +23,11 @@ public class Gamble extends Command {
 		this.author = author;
 	}
 
-	//Runs the !gamble command and checks the users money
+
+	/**
+	 * Runs the gamble commond
+	 * @param channel
+	 */
 	public void runCommand(MessageChannel channel)
 	{
 		if(!verifyCommand()) {
@@ -52,7 +56,10 @@ public class Gamble extends Command {
 		db.close();
 	}
 
-	//Rolls a random number and if the number is below 35, "true" is returned
+	/**
+	 * Rolls a random number 0-100
+	 * @return true if the value is less than 36
+	 */
 	private Boolean gamble() {
 		Random rand = new Random();
 		int val = rand.nextInt() % 100;
@@ -60,7 +67,10 @@ public class Gamble extends Command {
 		return val <= 35;
 	}
 
-	//Verifies that the correct arguments were passed in when calling gamble
+	/**
+	 * Verifies that the correct arguments were passed in when calling the gamble command
+	 * @return If the args are valid (true/false)
+	 */
 	private Boolean verifyCommand() {
 		//Verify that a second argument was passed in
 		if(splitCommand.length <= 1) {

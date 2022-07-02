@@ -5,8 +5,8 @@ import JavaBot.Listeners.*;
 
 public class CommandFactory
 {
-	private String command;
-	private User author;
+	private final String command;
+	private final User author;
 
 	public CommandFactory(String command, User author)
 	{
@@ -14,6 +14,10 @@ public class CommandFactory
 		this.author = author;
 	}
 
+	/**
+	 * Factory that returns a class for the specified command
+	 * @return Class that implements the Command abstract class
+	 */
 	public Command getCommand()
 	{
 		String cleanCommand = command.replace("!", "");

@@ -23,12 +23,18 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class MongoConnection {
 
-	private MongoClient mongoClient;	
+	/** Stores the instance of the MongoDB Connection */
+	private MongoClient mongoClient;
+	/** Stores the URI for the MongoDB Connection */
 	private String uri;
+	/** Stores our POJO which allows us to map the document in Mongo to a Java Object */
 	private CodecRegistry pojoCodecRegistry;
+	/** Success flag (?) */
 	private Boolean success;
 
-	//Opens up the initial mongo connection and stores it in an internal variable
+	/**
+	 * Opens a mongo connection and stores the instance internally
+ 	 */
 	public MongoConnection() {
 		Dotenv dotenv = Dotenv.load();
 		this.uri = dotenv.get("MONGO_URI");
@@ -42,33 +48,50 @@ public class MongoConnection {
 			this.mongoClient = null;
 			this.success = false;
 		}
-	}	
+	}
 
-	//Returns the collection of just documents
+	/**
+	 * Queries the database and returns all the document in the discord index
+	 * @return Collection of documents in the discord index
+	 */
 	private MongoCollection<Document> getCollection() {
 		MongoDatabase db = mongoClient.getDatabase("botDatabase");
 		return db.getCollection("discord");
 	}
 
-	//Gets the collection of Users
+	/**
+	 * Queries the database and returns a collection of the user documents
+ 	 * @return Collection of user documents from the database
+	 */
 	private MongoCollection<DiscordUser> getUserCollection() {
 		MongoDatabase db = mongoClient.getDatabase("botDatabase").withCodecRegistry(pojoCodecRegistry);
 		return db.getCollection("discord", DiscordUser.class);
 	}
 
-	//Returns if the database was able to open a connection or not
+	/**
+	 * Function to query the status of the database connection
+ 	 * @return whether the connection was successful or not
+	 */
 	public Boolean getStatus() {
 		return success;
 	}
 
-	//Finds a user in the database and returns their document
+	/**
+	 * Searches the database for a specific user
+	 * @param username discord username
+	 * @return Document containing the user info
+	 */
 	public DiscordUser findUser(String username) {
 		MongoCollection<DiscordUser> coll = getUserCollection(); 
 		DiscordUser doc = coll.find(eq("username", username)).first();
 		return doc;
 	}
 
-	//Adds a User to the database using the user POJO
+	/**
+	 * Adds a user to the MongoDB
+	 * @param username discord username
+	 * @return A document containing the new users information
+	 */
 	public DiscordUser addUser(String username) {
 		//Creates a new user with the provided username
 		DiscordUser user = new DiscordUser(username);
@@ -78,21 +101,29 @@ public class MongoConnection {
 		//Return a reference to the user that was just added
 		return findUser(username);
 	}
-	
 
-	//Adds to the users message count
+	/**
+	 * Increments a users sent message counter
+	 * @param user A reference to the discord user
+	 */
 	public void addMessage(DiscordUser user) { 
 		MongoCollection<DiscordUser> collection = getUserCollection();
 		collection.updateOne(eq("username", user.getUsername()), Updates.inc("messagesSent", 1), new UpdateOptions().upsert(true));
 	}
-	
-	//Adds money to the user in the database
+
+	/**
+	 * Increments the users total cash in the database
+	 * @param user A reference to the discord user
+	 * @param amount Amount of money to give the user
+	 */
 	public void addMoney(DiscordUser user, int amount) {
 		MongoCollection<DiscordUser> collection = getUserCollection();
 		collection.updateOne(eq("username", user.getUsername()), Updates.inc("money", amount), new UpdateOptions().upsert(true));
 	}
 
-	//Closes the connection
+	/**
+	 * Close the MongoDB connection
+	 */
 	public void close() {
 		mongoClient.close();
 	}

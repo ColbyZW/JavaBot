@@ -19,4 +19,11 @@ A bot written with the JDA wrapper
   
   <dt>profile</dt>
   <dd>Sends an embed with user stats on messages sent in the server and money in their wallet</dt>
+  
+  <dt>ge &ltitem&gt</dt>
+  <dd>Searches the OSRS grand exchange for the price of the item you searched for</dd>
+  
+  <dt>wiki &ltsearch&gt</dt>
+  <dd>Searches the OSRS wiki for what you search and returns a link to the wiki page</dd>
+  
 </dl>
